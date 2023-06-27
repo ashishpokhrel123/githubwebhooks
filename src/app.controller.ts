@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import redis from 'redis';
 
 interface CommitData {
   authorFullName: string | null;
@@ -8,43 +9,67 @@ interface CommitData {
 
 @Controller()
 export class AppController {
-  private commitHistory: any[] = [];
+  private redisClient: any;
+
+  constructor() {
+    this.redisClient = redis.createClient();
+  }
 
   @Post()
   handlePostRequest(@Body() payload: any): { status: number; message: string } {
-    this.commitHistory = payload;
+    const commitHistoryKey = 'commitHistory';
+    this.redisClient.rpush(commitHistoryKey, JSON.stringify(payload));
     return {
       status: HttpStatus.OK,
       message: 'Payload stored successfully',
     };
   }
 
+  private async getCommitHistoryFromRedis(key: string): Promise<string[]> {
+    return new Promise<string[]>((resolve, reject) => {
+      this.redisClient.lrange(key, 0, -1, (error, commitList) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(commitList);
+        }
+      });
+    });
+  }
+
   @Get()
-  handleGetRequest(): {
+  async handleGetRequest(): Promise<{
     status: number;
     message: string;
-    data: CommitData | null;
-  } {
-    if (this.commitHistory.length === 0) {
+    data: CommitData[] | null;
+  }> {
+    const commitHistoryKey = 'commitHistory';
+    try {
+      const commits = await this.getCommitHistoryFromRedis(commitHistoryKey);
+
+      if (!commits || commits.length === 0) {
+        return {
+          status: HttpStatus.NO_CONTENT,
+          message: 'No commits available',
+          data: null,
+        };
+      }
+
+      const parsedCommitsHistory: CommitData[] = commits.map((commit: string) =>
+        JSON.parse(commit),
+      );
+
       return {
-        status: HttpStatus.NO_CONTENT,
-        message: 'No commit data available',
+        status: HttpStatus.OK,
+        message: 'Commit data retrieved successfully from Redis',
+        data: parsedCommitsHistory,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Error retrieving commit data from Redis',
         data: null,
       };
     }
-    const latestCommit = this.commitHistory[this.commitHistory.length - 1];
-    const { author, message, timestamp } = latestCommit.head_commit;
-
-    const data: CommitData = {
-      authorFullName: author?.name || null,
-      commitMessage: message || null,
-      commitDate: timestamp || null,
-    };
-
-    return {
-      status: HttpStatus.OK,
-      message: 'Report generated successfully',
-      data,
-    };
   }
 }
