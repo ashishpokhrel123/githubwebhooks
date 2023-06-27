@@ -29,26 +29,6 @@ export class AppController {
     };
   }
 
-  @Get('generatedReport')
-  async generatedReport(@Body() payload: any) {
-    if (payload && payload.head_commit) {
-      const author = payload.head_commit.author.name;
-      const commitMessage = payload.head_commit.message;
-      const commitDate = payload.head_commit.timestamp;
 
-      return {
-        status: HttpStatus.OK,
-        message: 'Report generated succesfully',
-        data: {
-          author: author || null,
-          commitMessage: commitMessage || null,
-          commitDate: commitDate || null,
-        },
-      };
-    }
-    return {
-      status: HttpStatus.NOT_FOUND,
-      message: 'No data in payload',
-    };
-  }
+  
 }
