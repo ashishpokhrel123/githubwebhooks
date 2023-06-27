@@ -8,7 +8,7 @@ interface CommitData {
 
 @Controller()
 export class AppController {
-  private commitHistory: any = null;
+  private commitHistory: any[] = [];
 
   @Post()
   handlePostRequest(@Body() payload: any): { status: number; message: string } {
@@ -20,16 +20,20 @@ export class AppController {
   }
 
   @Get()
-  handleGetRequest(): { status: number; message: string; data: CommitData | null } {
-    if (!this.commitHistory.head_commit) {
+  handleGetRequest(): {
+    status: number;
+    message: string;
+    data: [CommitData] | null;
+  } {
+    if (this.commitHistory.length === 0) {
       return {
         status: HttpStatus.NO_CONTENT,
         message: 'No commit data available',
         data: null,
       };
     }
-
-    const { author, message, timestamp } = this.commitHistory.head_commit;
+    const latestCommit = this.commitHistory[this.commitHistory.length - 1];
+    const { author, message, timestamp } = latestCommit.head_commit;
 
     const data: CommitData = {
       authorFullName: author?.name || null,
