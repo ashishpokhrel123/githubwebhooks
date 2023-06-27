@@ -16,7 +16,6 @@ export class AppController {
   handlePostRequest(@Body() payload: any): { status: number; message: string } {
     const { author, message, timestamp } = payload.head_commit;
     const { default_branch } = payload.repository.default_branch;
-    console.log(default_branch, "db")
     const commitData: CommitData = {
       authorFullName: author?.name || null,
       commitMessage: message || null,
