@@ -27,7 +27,7 @@ const { default_branch} = payload.repository.default_branch;
 
     return {
       status: HttpStatus.OK,
-      message: 'Commit saved successfully',
+      message: 'Commit added successfully',
     };
 
   }
