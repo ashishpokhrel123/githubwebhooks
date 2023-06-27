@@ -47,4 +47,20 @@ export class AppController {
       data,
     };
   }
+  @Get('/commits')
+  getAllCommits(): { status: number; message: string; data: any[] } {
+    if (this.commitHistory.length === 0) {
+      return {
+        status: HttpStatus.NO_CONTENT,
+        message: 'No commit data available',
+        data: [],
+      };
+    }
+
+    return {
+      status: HttpStatus.OK,
+      message: 'All commits retrieved successfully',
+      data: this.commitHistory,
+    };
+  }
 }
