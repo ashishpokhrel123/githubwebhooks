@@ -23,7 +23,7 @@ export class AppController {
 
   @Get()
   handleGetRequest(): { status: number; message: string; data: CommitData | null } {
-    if (this.commitHistory && this.commitHistory.head_commit) {
+
       const { author, message, timestamp } = this.commitHistory.head_commit;
 
       const data: CommitData = {
@@ -37,12 +37,6 @@ export class AppController {
         message: 'Report generated successfully',
         data,
       };
-    } else {
-      return {
-        status: HttpStatus.NOT_FOUND,
-        message: 'No data in payload',
-        data: null,
-      };
-    }
+    
   }
 }
