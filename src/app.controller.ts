@@ -7,10 +7,10 @@ export class AppController {
 
   @Get()
   getHello(@Body() payload: any): {status:number, message:string, data: { author:string , commitMessage:string, commitDate:string }} {
-   if (payload && payload.head_commit) {
-      const author = payload.head_commit.author.name;
-      const commitMessage = payload.head_commit.message;
-      const commitDate = payload.head_commit.timestamp;
+   if (payload) {
+      const author = payload.full_name;
+      const commitMessage = payload.commits.message;
+      const commitDate = payload.head_commits.timestamp;
 
       return {
         status: HttpStatus.OK,
