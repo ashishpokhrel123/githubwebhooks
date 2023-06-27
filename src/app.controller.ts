@@ -9,10 +9,12 @@ interface CommitData {
 @Controller()
 export class AppController {
   private commitHistory: any;
+  
 
   @Post()
   handlePostRequest(@Body() payload: any): { status: number; message: string } {
     this.commitHistory = payload;
+     console.log(this.commitHistory, "cm")
     return {
       status: HttpStatus.OK,
       message: 'Payload stored successfully',
