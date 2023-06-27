@@ -19,34 +19,37 @@ export class AppController {
     };
   }
 
-  @Get()
-  handleGetRequest(): {
-    status: number;
-    message: string;
-    data: [CommitData] | null;
-  } {
-    if (this.commitHistory.length === 0) {
-      return {
-        status: HttpStatus.NO_CONTENT,
-        message: 'No commit yet',
-        data: null,
-      };
-    }
-    const latestCommit = this.commitHistory[this.commitHistory.length - 1];
-    const { author, message, timestamp } = latestCommit.head_commit;
+@Get()
+handleGetRequest(): {
+  status: number;
+  message: string;
+  data: CommitData[] | null;
+} {
+  if (this.commitHistory.length === 0) {
+    return {
+      status: HttpStatus.NO_CONTENT,
+      message: 'No commits yet',
+      data: null,
+    };
+  }
 
-    const data: CommitData = {
+  const commitDataList: CommitData[] = this.commitHistory.map(commit => {
+    const { author, message, timestamp } = commit.head_commit;
+
+    return {
       authorFullName: author?.name || null,
       commitMessage: message || null,
       commitDate: timestamp || null,
     };
+  });
 
-    return {
-      status: HttpStatus.OK,
-      message: 'Report generated successfully',
-      data,
-    };
-  }
+  return {
+    status: HttpStatus.OK,
+    message: 'Commits retrieved successfully',
+    data: commitDataList,
+  };
+}
+
   @Get('/commits')
   getAllCommits(): { status: number; message: string; data: any[] } {
     if (this.commitHistory.length === 0) {
