@@ -21,7 +21,7 @@ export class AppController {
 
   @Get()
   handleGetRequest(): { status: number; message: string; data: CommitData | null } {
-    if (!this.commitHistory || !this.commitHistory.head_commit) {
+    if (!this.commitHistory.head_commit) {
       return {
         status: HttpStatus.NO_CONTENT,
         message: 'No commit data available',
