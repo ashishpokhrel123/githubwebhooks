@@ -6,18 +6,26 @@ interface CommitData {
   commitMessage: string | null;
   commitDate: string | null;
 }
+function formatDateToWords(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+  return date.toLocaleDateString('en-US', options);
+}
 
 @Controller()
 export class AppController {
-   constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) {}
 
   @Post()
   handlePostRequest(@Body() payload: any): { status: number; message: string } {
-const { author, message, timestamp } = payload.head_commit;
+    const { author, message, timestamp } = payload.head_commit;
     const commitData: CommitData = {
       authorFullName: author?.name || null,
       commitMessage: message || null,
-      commitDate: timestamp || null,
+      commitDate: formatDateToWords(new Date(timestamp)) || null,
     };
 
     this.appService.storeCommit(commitData);
@@ -26,11 +34,14 @@ const { author, message, timestamp } = payload.head_commit;
       status: HttpStatus.OK,
       message: 'Commit stored succesfully',
     };
-
   }
 
   @Get()
-  handleGetRequest(): { status: number; message: string; data: CommitData[] | null } {
+  handleGetRequest(): {
+    status: number;
+    message: string;
+    data: CommitData[] | null;
+  } {
     const commitHistory = this.appService.getAllCommits();
 
     if (commitHistory.length === 0) {
@@ -46,7 +57,5 @@ const { author, message, timestamp } = payload.head_commit;
       message: 'All commits retrieved successfully',
       data: commitHistory,
     };
-  }
-
   }
 }
