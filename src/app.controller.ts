@@ -11,7 +11,7 @@ export class AppController {
     if (!payload || !payload.head_commit) {
       return {
         status: HttpStatus.NOT_FOUND,
-        message: 'No data in payload',
+        message: 'No data',
         data: null,
       };
     }
