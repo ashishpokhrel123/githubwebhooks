@@ -23,6 +23,7 @@ export class AppController {
 
   @Get()
   handleGetRequest(): { status: number; message: string; data: CommitData | null } {
+    console.log(this.commitHistory, "comm")
 
       const { author, message, timestamp } = this.commitHistory.repository.head_commit;
 
