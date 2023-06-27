@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 interface CommitData {
   authorFullName: string | null;
   commitMessage: string | null;
-  commitDate: Date | null;
+  commitDate: string | null;
 }
 
 @Injectable()

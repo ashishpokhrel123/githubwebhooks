@@ -4,37 +4,33 @@ import { AppService } from './app.service';
 interface CommitData {
   authorFullName: string | null;
   commitMessage: string | null;
-  commitDate: Date | null;
+  commitDate: string | null;
 }
-
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+   constructor(private readonly appService: AppService) {}
 
   @Post()
   handlePostRequest(@Body() payload: any): { status: number; message: string } {
-    const { author, message, timestamp } = payload.head_commit;
+const { author, message, timestamp } = payload.head_commit;
     const commitData: CommitData = {
       authorFullName: author?.name || null,
       commitMessage: message || null,
-      commitDate: new Date(timestamp) || null,
+      commitDate: timestamp || null,
     };
 
     this.appService.storeCommit(commitData);
 
     return {
       status: HttpStatus.OK,
-      message: 'Commit stored succesfully',
+      message: 'Payload stored successfully',
     };
+
   }
 
   @Get()
-  handleGetRequest(): {
-    status: number;
-    message: string;
-    data: CommitData[] | null;
-  } {
+  handleGetRequest(): { status: number; message: string; data: CommitData[] | null } {
     const commitHistory = this.appService.getAllCommits();
 
     if (commitHistory.length === 0) {
@@ -50,5 +46,7 @@ export class AppController {
       message: 'All commits retrieved successfully',
       data: commitHistory,
     };
+  }
+
   }
 }
