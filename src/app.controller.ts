@@ -5,17 +5,17 @@ interface CommitData {
   authorFullName: string | null;
   commitMessage: string | null;
   commitDate: string | null;
-  enviroment:string | null;
+  enviroment: string | null;
 }
 
 @Controller()
 export class AppController {
-   constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) {}
 
   @Post()
   handlePostRequest(@Body() payload: any): { status: number; message: string } {
-const { author, message, timestamp } = payload.head_commit;
-const { default_branch} = payload.repository.default_branch;
+    const { author, message, timestamp } = payload.head_commit;
+    const { default_branch } = payload.repository.default_branch;
     const commitData: CommitData = {
       authorFullName: author?.name || null,
       commitMessage: message || null,
@@ -27,13 +27,16 @@ const { default_branch} = payload.repository.default_branch;
 
     return {
       status: HttpStatus.OK,
-      message: 'Commit added successfully',
+      message: 'Commit saved successfully',
     };
-
   }
 
   @Get()
-  handleGetRequest(): { status: number; message: string; data: CommitData[] | null } {
+  handleGetRequest(): {
+    status: number;
+    message: string;
+    data: CommitData[] | null;
+  } {
     const commitHistory = this.appService.getAllCommits();
 
     if (commitHistory.length === 0) {
@@ -50,6 +53,4 @@ const { default_branch} = payload.repository.default_branch;
       data: commitHistory,
     };
   }
-
-  }
-
+}
