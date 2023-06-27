@@ -24,7 +24,7 @@ const { author, message, timestamp } = payload.head_commit;
 
     return {
       status: HttpStatus.OK,
-      message: 'Payload stored successfully',
+      message: 'Commit stored successfully',
     };
 
   }
