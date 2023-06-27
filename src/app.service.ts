@@ -3,6 +3,7 @@ interface CommitData {
   authorFullName: string | null;
   commitMessage: string | null;
   commitDate: string | null;
+  enviroment:string | null;
 }
 
 @Injectable()

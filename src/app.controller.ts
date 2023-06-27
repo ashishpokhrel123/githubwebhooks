@@ -5,6 +5,7 @@ interface CommitData {
   authorFullName: string | null;
   commitMessage: string | null;
   commitDate: string | null;
+  enviroment:string | null;
 }
 
 @Controller()
@@ -18,6 +19,7 @@ const { author, message, timestamp } = payload.head_commit;
       authorFullName: author?.name || null,
       commitMessage: message || null,
       commitDate: timestamp || null,
+      enviroment: payload.repository.default_branch,
     };
 
     this.appService.storeCommit(commitData);
@@ -49,4 +51,4 @@ const { author, message, timestamp } = payload.head_commit;
   }
 
   }
-}
+
