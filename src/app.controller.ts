@@ -8,13 +8,11 @@ export class AppController {
     message: string;
     data: any;
   } {
-    console.log(payload);
 
-    if (payload && payload.repository && payload.commits) {
-      const authorUsername = payload.sender.login;
-      const authorFullName = payload.sender.fullName;
-      const commitMessage = payload.commits[0].message;
-      const commitDate = payload.commits[0].timestamp;
+    if (payload && payload.head_commit) {
+      const authorFullName = payload.author.name;
+      const commitMessage = payload.head_commit.message;
+      const commitDate = payload.head_commit.timestamp;
 
       return {
         status: HttpStatus.OK,
