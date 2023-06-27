@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 interface CommitData {
   authorFullName: string | null;
   commitMessage: string | null;
-  commitDate: string | null;
+  commitDate: Date | null;
 }
 function formatDateToWords(date: Date): string {
   const options: Intl.DateTimeFormatOptions = {
@@ -25,7 +25,7 @@ export class AppController {
     const commitData: CommitData = {
       authorFullName: author?.name || null,
       commitMessage: message || null,
-      commitDate: formatDateToWords(new Date(timestamp)) || null,
+      commitDate: new Date(timestamp) || null,
     };
 
     this.appService.storeCommit(commitData);
