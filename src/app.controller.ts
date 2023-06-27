@@ -28,7 +28,7 @@ handleGetRequest(): {
   if (this.commitHistory.length === 0) {
     return {
       status: HttpStatus.NO_CONTENT,
-      message: 'No commits yet',
+      message: 'No commits yet, please deploy',
       data: null,
     };
   }
