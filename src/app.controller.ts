@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import { AppService } from './app.service';
 
 interface CommitData {
   authorFullName: string | null;
@@ -8,20 +9,31 @@ interface CommitData {
 
 @Controller()
 export class AppController {
-  private commitHistory: any[] = [];
+   constructor(private readonly appService: AppService) {}
 
   @Post()
   handlePostRequest(@Body() payload: any): { status: number; message: string } {
-    this.commitHistory.push(payload);
+const { author, message, timestamp } = payload.head_commit;
+    const commitData: CommitData = {
+      authorFullName: author?.name || null,
+      commitMessage: message || null,
+      commitDate: timestamp || null,
+    };
+
+    this.appService.storeCommit(commitData);
+
     return {
       status: HttpStatus.OK,
       message: 'Payload stored successfully',
     };
+
   }
 
   @Get()
   handleGetRequest(): { status: number; message: string; data: CommitData[] | null } {
-    if (!this.commitHistory) {
+    const commitHistory = this.appService.getAllCommits();
+
+    if (commitHistory.length === 0) {
       return {
         status: HttpStatus.NO_CONTENT,
         message: 'No commit data available',
@@ -29,20 +41,12 @@ export class AppController {
       };
     }
 
-    const commitDataList: CommitData[] = this.commitHistory.map(commit => {
-      const { author, message, timestamp } = commit.head_commit;
-
-      return {
-        authorFullName: author?.name || null,
-        commitMessage: message || null,
-        commitDate: timestamp || null,
-      };
-    });
-
     return {
       status: HttpStatus.OK,
       message: 'All commits retrieved successfully',
-      data: commitDataList,
+      data: commitHistory,
     };
+  }
+
   }
 }
