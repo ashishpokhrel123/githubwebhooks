@@ -8,30 +8,26 @@ export class AppController {
     message: string;
     data: any;
   } {
-    const commitHistory = JSON.parse(JSON.stringify(payload));
-
-    if (commitHistory && commitHistory.head_commit) {
-      console.log("hello i am here")
-      const authorFullName = commitHistory.author.name;
-      const commitMessage = commitHistory.head_commit.message;
-      const commitDate = commitHistory.head_commit.timestamp;
-
-      return {
-        status: HttpStatus.OK,
-        message: 'Report generated successfully',
-        data: {
-          authorFullName: authorFullName || null,
-          commitMessage: commitMessage || null,
-          commitDate: commitDate || null,
-        },
-      };
-    } else {
-       console.log("hello i am there")
+    if (!payload || !payload.head_commit) {
       return {
         status: HttpStatus.NOT_FOUND,
         message: 'No data in payload',
         data: null,
       };
     }
+
+    const { author, head_commit } = payload;
+    const { name } = author || {};
+    const { message: commitMessage, timestamp: commitDate } = head_commit;
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Report generated successfully',
+      data: {
+        authorFullName: name || null,
+        commitMessage: commitMessage || null,
+        commitDate: commitDate || null,
+      },
+    };
   }
 }
