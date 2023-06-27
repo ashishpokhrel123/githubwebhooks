@@ -1,8 +1,8 @@
-import { Body, Controller, Get, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-  @Get()
+  @Post()
   getHello(@Body() payload: any): { status: number; message: string; data: any } {
     console.log(payload)
     if (payload && payload.repository && payload.commits) {
