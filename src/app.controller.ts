@@ -15,12 +15,11 @@ export class AppController {
   @Post()
   handlePostRequest(@Body() payload: any): { status: number; message: string } {
     const { author, message, timestamp } = payload.head_commit;
-    const { default_branch } = payload.repository.default_branch;
     const commitData: CommitData = {
       authorFullName: author?.name || null,
       commitMessage: message || null,
       commitDate: timestamp || null,
-      enviroment: default_branch || null,
+      enviroment: payload.repository.default_branch || null,
     };
 
     this.appService.storeCommit(commitData);
