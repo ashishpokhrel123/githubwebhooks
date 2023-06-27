@@ -1,33 +1,46 @@
-import { Body, Controller, Get, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+
+interface CommitData {
+  authorFullName: string | null;
+  commitMessage: string | null;
+  commitDate: string | null;
+}
 
 @Controller()
 export class AppController {
+  private commitHistory: any;
+
+  @Post()
+  handlePostRequest(@Body() payload: any): { status: number; message: string } {
+    this.commitHistory = payload;
+    return {
+      status: HttpStatus.OK,
+      message: 'Payload stored successfully',
+    };
+  }
+
   @Get()
-  getHello(@Body() payload: any): {
-    status: number;
-    message: string;
-    data: any;
-  } {
-    if (!payload || !payload.head_commit) {
+  handleGetRequest(): { status: number; message: string; data: CommitData | null } {
+    if (this.commitHistory && this.commitHistory.head_commit) {
+      const { author, message, timestamp } = this.commitHistory.head_commit;
+
+      const data: CommitData = {
+        authorFullName: author?.name || null,
+        commitMessage: message || null,
+        commitDate: timestamp || null,
+      };
+
+      return {
+        status: HttpStatus.OK,
+        message: 'Report generated successfully',
+        data,
+      };
+    } else {
       return {
         status: HttpStatus.NOT_FOUND,
-        message: 'No data',
+        message: 'No data in payload',
         data: null,
       };
     }
-
-    const { author, head_commit } = payload;
-    const { name } = author || {};
-    const { message: commitMessage, timestamp: commitDate } = head_commit;
-
-    return {
-      status: HttpStatus.OK,
-      message: 'Report generated successfully',
-      data: {
-        authorFullName: name || null,
-        commitMessage: commitMessage || null,
-        commitDate: commitDate || null,
-      },
-    };
   }
 }
