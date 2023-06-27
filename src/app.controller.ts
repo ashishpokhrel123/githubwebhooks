@@ -21,13 +21,13 @@ export class AppController {
 
   @Get()
   handleGetRequest(): { status: number; message: string; data: CommitData[] | null } {
-    // if (this.commitHistory.) {
-    //   return {
-    //     status: HttpStatus.NO_CONTENT,
-    //     message: 'No commit data available',
-    //     data: null,
-    //   };
-    // }
+    if (!this.commitHistory) {
+      return {
+        status: HttpStatus.NO_CONTENT,
+        message: 'No commit data available',
+        data: null,
+      };
+    }
 
     const commitDataList: CommitData[] = this.commitHistory.map(commit => {
       const { author, message, timestamp } = commit.head_commit;
