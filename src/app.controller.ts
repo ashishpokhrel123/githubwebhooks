@@ -1,20 +1,17 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Body, Controller, Get, HttpStatus } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Get()
-  getHello(@Body() payload: any): {status:number, message:string, data: { author:string , commitMessage:string, commitDate:string }} {
-   if (payload) {
-      const author = payload.full_name;
-      const commitMessage = payload.commits.message;
-      const commitDate = payload.head_commits.timestamp;
+  getHello(@Body() payload: any): { status: number; message: string; data: any } {
+    if (payload && payload.repository && payload.commits && payload.head_commit) {
+      const author = payload.sender.login;
+      const commitMessage = payload.head_commit.message;
+      const commitDate = payload.head_commit.timestamp;
 
       return {
         status: HttpStatus.OK,
-        message: 'Report generated succesfully',
+        message: 'Report generated successfully',
         data: {
           author: author || null,
           commitMessage: commitMessage || null,
@@ -22,13 +19,11 @@ export class AppController {
         },
       };
     }
+
     return {
       status: HttpStatus.NOT_FOUND,
       message: 'No data in payload',
-      data:null
+      data: null,
     };
   }
-
-
-  
 }
