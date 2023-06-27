@@ -11,6 +11,7 @@ export class AppController {
     const commitHistory = JSON.parse(JSON.stringify(payload));
 
     if (commitHistory && commitHistory.head_commit) {
+      console.log("hello i am here")
       const authorFullName = commitHistory.author.name;
       const commitMessage = commitHistory.head_commit.message;
       const commitDate = commitHistory.head_commit.timestamp;
@@ -25,6 +26,7 @@ export class AppController {
         },
       };
     } else {
+       console.log("hello i am there")
       return {
         status: HttpStatus.NOT_FOUND,
         message: 'No data in payload',
