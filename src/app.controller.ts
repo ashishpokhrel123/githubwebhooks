@@ -6,14 +6,7 @@ interface CommitData {
   commitMessage: string | null;
   commitDate: Date | null;
 }
-function formatDateToWords(date: Date): string {
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  };
-  return date.toLocaleDateString('en-US', options);
-}
+
 
 @Controller()
 export class AppController {
