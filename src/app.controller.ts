@@ -4,7 +4,8 @@ import { Body, Controller, Get, HttpStatus } from '@nestjs/common';
 export class AppController {
   @Get()
   getHello(@Body() payload: any): { status: number; message: string; data: any } {
-    if (payload && payload.repository && payload.commits && payload.head_commit) {
+    console.log(payload)
+    if (payload && payload.repository && payload.commits) {
       const author = payload.sender.login;
       const commitMessage = payload.commits.message;
       const commitDate = payload.commits.timestamp;
