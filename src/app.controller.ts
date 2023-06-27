@@ -36,7 +36,7 @@ const { author, message, timestamp } = payload.head_commit;
     if (commitHistory.length === 0) {
       return {
         status: HttpStatus.NO_CONTENT,
-        message: 'No commit data available',
+        message: 'No commit  available',
         data: null,
       };
     }
